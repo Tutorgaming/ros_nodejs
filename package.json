@@ -1,0 +1,28 @@
+{
+  "name": "socketio_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel ./src -d lib",
+    "start": "nodemon index.js --exec babel-node --presets es2015,stage-2",
+    "client": "nodemon client.js --exec babel-node --presets es2015,stage-2",
+    "serve": "nodemon server.js --exec babel-node --presets es2015,stage-2",
+    "robot" : "nodemon robot.js --exec babel-node --presets es2015,stage-2"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqp": "^0.2.6",
+    "amqplib": "^0.5.1",
+    "express": "^4.15.3",
+    "mavlink": "^1.0.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "nodemon": "^1.11.0"
+  }
+}
