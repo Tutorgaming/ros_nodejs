@@ -1,0 +1,26 @@
+header: 
+  seq: 129880
+  stamp: 
+    secs: 11652
+    nsecs: 165000000
+  frame_id: ''
+framing_status: 1
+magic: 254
+len: 30
+incompat_flags: 0
+compat_flags: 0
+seq: 128
+sysid: 1
+compid: 190
+msgid: 24
+checksum: 31878
+payload64: [
+    15484775619, 
+    18446736604761418811L, 
+    71777214277877760, 
+    280388366696703]
+    
+signature: []
+---
+
+
