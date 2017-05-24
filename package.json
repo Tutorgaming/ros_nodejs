@@ -9,19 +9,19 @@
     "start": "nodemon index.js --exec babel-node --presets es2015,stage-2",
     "client": "nodemon client.js --exec babel-node --presets es2015,stage-2",
     "serve": "nodemon server.js --exec babel-node --presets es2015,stage-2",
-    "robot" : "nodemon robot.js --exec babel-node --presets es2015,stage-2"
+    "robot": "nodemon robot.js --exec babel-node --presets es2015,stage-2"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "amqp": "^0.2.6",
     "amqplib": "^0.5.1",
-    "express": "^4.15.3",
-    "mavlink": "^1.0.1",
     "argparse": "1.0.7",
     "async": "2.0.1",
     "bn.js": "^4.11.6",
     "bunyan": "1.8.1",
+    "express": "^4.15.3",
+    "mavlink": "^1.0.1",
     "md5": "2.1.0",
     "moment": "2.12.0",
     "ultron": "1.1.0",
