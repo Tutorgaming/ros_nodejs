@@ -1,4 +1,7 @@
-// ES6 Standard
+// AMQP LIB 
+import amqp from 'amqplib/callback_api';
+const RECEIVE_QUEUE_NAME = "robot_receive_queue";
+
 const app = require('express')();
 const http = require('http').Server(app);
 
@@ -28,25 +31,48 @@ const display_ip = (sock) => {
 
 // Server Script
 MAVParser.on("ready" ,() =>{
-    console.log("MAVLink Parser init XML complete");
+    console.log("[Server] MAVLink Parser init XML complete");
 
-    io.on('connection', socket => {
-        console.log(`${display_ip(socket)} connected`);
+    amqp.connect('amqp://localhost',(err,conn)=>{
+        console.log("[Server] AMQP Connected !");
+        conn.createChannel(function(err, ch) {
+            ch.assertQueue(RECEIVE_QUEUE_NAME, {durable: false});
 
-        socket.on('mavlink',data => {
-            MAVParser.parse(data);
-        });
-        socket.on('message',(message)=>{
-            console.log(`Receive : ${message}`);
-        });
-        socket.on('disconnect', () => {
-            console.log(`${display_ip(socket)} disconnected`);
-        });
+            io.on('connection', socket => {
+                // PROMPT MESSAGE
+                console.log(`${display_ip(socket)} connected`);
+                // STORE KEY : PAIR SOCKET 
 
-        MAVParser.on('message', message=>{
-            // After Finishing data parsing 
-            console.log(message);
+                socket.on('mavlink',data => {
+                    MAVParser.parse(data);
+                });
+
+                socket.on('disconnect', () => {
+                    console.log(`${display_ip(socket)} disconnected`);
+                });
+
+                MAVParser.on('message', message=>{
+                    // After Finishing data parsing 
+                    console.log("ENQUEUE");
+                    ch.sendToQueue(RECEIVE_QUEUE_NAME, message.buffer);
+                });
+            });
         });
+    });
+});
+
+MAVParser.on("GPS_RAW_INT", function(message, fields) {
+		//console.log(fields);
+	});
+
+MAVParser.on('sequenceError', function(mismatch){
+    //console.log("Sequence Error " + mismatch)
+});
+
+MAVParser.on('checksumFail', function(mismatch){
+    //console.log("Checksum Error")
+});
+
         // setInterval(()=>{
         //     MAVParser.createMessage('HEARTBEAT',{
         //         'type' : 6,
@@ -58,22 +84,4 @@ MAVParser.on("ready" ,() =>{
         //     },(message)=>{
         //         socket.emit('server',message.buffer)
         //     });
-        // },2000);
-
-    });
-});
-
-
-
-
-MAVParser.on("GPS_RAW_INT", function(message, fields) {
-		console.log(fields);
-	});
-
-MAVParser.on('sequenceError', function(mismatch){
-    console.log("Sequence Error " + mismatch)
-});
-
-MAVParser.on('checksumFail', function(mismatch){
-    console.log("Checksum Error")
-});
+        // },100);
