@@ -14,7 +14,7 @@ import rosnodejs from './rosnodejs/index.js'
 const MAVParser = new mavlink();
 
 // Destination server detail
-const SOCKET_IO_SERVER = 'http://192.168.1.19:3000';
+const SOCKET_IO_SERVER = 'http://192.168.1.117:3000';
 const socket           = io.connect(SOCKET_IO_SERVER);
 
 // Init ROS Node
@@ -47,6 +47,10 @@ const rosNode = rosnodejs.initNode(NODENAME,{onTheFly: true}).then((rosnode_inst
         
         socket.emit('mavlink',msgBuf);
 
+    },
+    {
+      queueSize: 1,
+      throttleMs: 200
     });
 });
 
@@ -56,7 +60,7 @@ MAVParser.on('ready', ()=>{
     
 });
 
-socket.on('server',(data)=>{
+socket.on('from_server',(data)=>{
         // Convert MAVLINK BUFFER TO ROSMSG
         MAVParser.parse(data);
 });
@@ -67,6 +71,7 @@ socket.on('connect', ()=>{
 
 MAVParser.on('message', (message)=>{
         console.log(message);
+        // PUB TO ROS WORLD
 });
 
 MAVParser.on('sequenceError', function(mismatch){
