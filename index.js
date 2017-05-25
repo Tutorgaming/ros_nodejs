@@ -42,10 +42,38 @@ MAVParser.on("ready" ,() =>{
         socket.on('disconnect', () => {
             console.log(`${display_ip(socket)} disconnected`);
         });
+
+        MAVParser.on('message', message=>{
+            // After Finishing data parsing 
+            console.log(message);
+        });
+        // setInterval(()=>{
+        //     MAVParser.createMessage('HEARTBEAT',{
+        //         'type' : 6,
+        //         'autopilot' : 8,
+        //         'base_mode' : 192,
+        //         'custom_mode' : 0,
+        //         'system_status' : 4,
+        //         'mavlink_version' : 3
+        //     },(message)=>{
+        //         socket.emit('server',message.buffer)
+        //     });
+        // },2000);
+
     });
 });
 
-MAVParser.on("message", (message)=>{
-    // After Finishing data parsing 
-    console.log(message);
+
+
+
+MAVParser.on("GPS_RAW_INT", function(message, fields) {
+		console.log(fields);
+	});
+
+MAVParser.on('sequenceError', function(mismatch){
+    console.log("Sequence Error " + mismatch)
+});
+
+MAVParser.on('checksumFail', function(mismatch){
+    console.log("Checksum Error")
 });
