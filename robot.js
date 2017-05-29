@@ -8,9 +8,9 @@
 import io from 'socket.io-client'
 import mavlink from 'mavlink'
 import mavlinkMessage from 'mavlink'
-import rosnodejs, { Time } from 'rosnodejs'
-import msgUtil from 'rosnodejs/dist/utils/message_utils.js'
-import serialize from 'rosnodejs/dist/ros_msg_utils/lib/base_serialize.js'
+import rosnodejs, { Time } from './rosnodejs'
+import msgUtil from './rosnodejs/dist/utils/message_utils.js'
+import serialize from './rosnodejs/dist/ros_msg_utils/lib/base_serialize.js'
 import BN from 'bn.js'
 
 // MAVLink Parser (for conversion between ROSMAV - MAV)
