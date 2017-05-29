@@ -1,0 +1,22 @@
+Message {
+  header:
+   Message {
+     seq: 5628,
+     stamp: { secs: 7744, nsecs: 280000000 },
+     frame_id: '' },
+  framing_status: 1,
+  magic: 254,
+  len: 30,
+  incompat_flags: 0,
+  compat_flags: 0,
+  seq: 227,
+  sysid: 1,
+  compid: 190,
+  msgid: 24,
+  checksum: 16607,
+  payload64:
+   [ <BN: 54bab97>,
+     <BN: fffffa63fffff378>,
+     <BN: ff00ff00000000>,
+     <BN: ff0300ff00ff> ],
+  signature: [] }
