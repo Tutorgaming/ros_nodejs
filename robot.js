@@ -86,8 +86,8 @@ const createSubscriber = (nodeHandle) => {
             // Socket Emit it out
             socket.emit('mavlink', msgBuf);
         }, {
-            queueSize: 10,
-            throttleMs: 100
+            queueSize: 20,
+            throttleMs: 50
         });
 };
 
