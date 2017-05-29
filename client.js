@@ -25,13 +25,13 @@ var client = udp.createSocket('udp4');
 
 // AMQP Instance Connect
 // connects to rabbitmq
-amqp.connect('amqp://localhost', function(err, conn) {
-    if (err != null) bail(err); // calls `bail` function if an error occurred when connecting
-    //consumer(conn); // creates a consumer
-    //publisher(conn); // creates a publisher
-});
+// amqp.connect('amqp://localhost', function(err, conn) {
+//     if (err != null) bail(err); // calls `bail` function if an error occurred when connecting
+//     //consumer(conn); // creates a consumer
+//     publisher(conn); // creates a publisher
+// });
 
-amqp2.connect('amqp://localhost', function(err, conn) {
+amqp2.connect('amqp://localhost', function (err, conn) {
     if (err != null) bail(err); // calls `bail` function if an error occurred when connecting
     consumer(conn); // creates a consumer
     //publisher(conn); // creates a publisher
@@ -42,21 +42,21 @@ function bail(err) {
     process.exit(1);
 }
 
-// Publisher
-function publisher(conn) {
-    conn.createChannel(on_open); // creates a channel and call `on_open` when done
-    function on_open(err, ch) {
-        if (err != null) bail(err); // calls `bail` function if an error occurred when creating the channel
-        ch.assertQueue(ROBOT_QUEUE_NAME, {
-            durable: false
-        });// asserts the queue exists
-        client.on('message', function (msg, info) {
-            console.log(msg);
-           ch.sendToQueue(ROBOT_QUEUE_NAME, msg); // sends a message to the queue
-        });
-        // ch.sendToQueue(q, new Buffer('something to do')); // sends a message to the queue
-    }
-}
+// // Publisher
+// function publisher(conn) {
+//     conn.createChannel(on_open); // creates a channel and call `on_open` when done
+//     function on_open(err, ch) {
+//         if (err != null) bail(err); // calls `bail` function if an error occurred when creating the channel
+//         ch.assertQueue(ROBOT_QUEUE_NAME, {
+//             durable: false
+//         });// asserts the queue exists
+//         client.on('message', function (msg, info) {
+//             console.log("ENQUEUE TO ROBOT :" + msg);
+//            ch.sendToQueue(ROBOT_QUEUE_NAME, msg); // sends a message to the queue
+//         });
+//         // ch.sendToQueue(q, new Buffer('something to do')); // sends a message to the queue
+//     }
+// }
 
 // Consumer
 function consumer(conn) {
@@ -67,19 +67,18 @@ function consumer(conn) {
         ch.assertQueue(RECEIVE_QUEUE_NAME, {
             durable: false
         });
-        ch.consume(RECEIVE_QUEUE_NAME, function(msg) { //consumes the queue
+        ch.consume(RECEIVE_QUEUE_NAME, function (msg) { //consumes the queue
             //console.log(msg.content);
             if (msg !== null) {
-                client.send(msg.content,14550,TO_HGMC_UDP_IP,function(){
-                    //console.log("PUSH TO HGMC");
-                })
+                client.send(msg.content, 14550, 'localhost', function () {
+                    // console.log("PUSH TO HGMC : " + msg.content);
+                });
             }
         });
 
         client.on('message', function (msg, info) {
             console.log(msg);
-           ch.sendToQueue(ROBOT_QUEUE_NAME, msg); // sends a message to the queue
+            ch.sendToQueue(ROBOT_QUEUE_NAME, msg); // sends a message to the queue
         });
     }
 }
-
