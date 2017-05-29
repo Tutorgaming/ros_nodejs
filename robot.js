@@ -39,9 +39,7 @@ MAVParser.on('ready', () => {
                 //PUB
                 const mavros_message = createMavlinkMessage(message);
                 console.log("publish message to ROS");
-                console.log(mavros_message);
                 publisher.publish(mavros_message);
-
             });
         }
     );
@@ -67,7 +65,7 @@ const createPublisher = (nodeHandle) => {
 const createSubscriber = (nodeHandle) => {
     nodeHandle.subscribe('/mavlink/to_gcs', 'mavros_msgs/Mavlink',
         (data) => {
-            //console.log(data);
+
             // Parse ROS Message to Buffer
             let msgBuf = new Buffer(data.len + 8);
             msgBuf.fill('\0');
@@ -84,7 +82,7 @@ const createSubscriber = (nodeHandle) => {
             msgBuf[5] = data.msgid;
             payload64.copy(msgBuf, 6, 0);
             msgBuf.writeUInt16LE(data.checksum, data.len + 6);
-            //console.log(payload64);
+
             // Socket Emit it out
             socket.emit('mavlink', msgBuf);
         }, {
@@ -102,19 +100,17 @@ const checkSocketConnectivity = () => {
 
 // Create ROS Message from incoming mavlink buffer
 const createMavlinkMessage = (incoming_msg) => {
-    //msgUtil.getHandlerForMsgType('UINt64')
     let byte_offset = 0;
     const payload_count = Math.ceil(incoming_msg.length / 8);
     var payload_64 = [];
-    // console.log(payload_count);
 
     // Create Payload 64
     for (let i = 0; i < payload_count; i++) {
         // Read Buffer offset 8
         let remaining_count = (incoming_msg.length - byte_offset) > 8 ?
             8 : (incoming_msg.length - byte_offset);
-        let temp = new Buffer(8);
-        temp.fill(0);
+        let temp = Buffer.alloc(8); // let temp = new Buffer(8);
+        // temp.fill(0);
         incoming_msg.payload.copy(temp, 0, byte_offset, byte_offset + remaining_count);
         //console.log(temp);
         let bignum = new BN(temp, '8', 'le');
@@ -122,7 +118,7 @@ const createMavlinkMessage = (incoming_msg) => {
         payload_64.push(bignum);
         byte_offset += 8;
     }
-    //console.log(incoming_msg.payload);
+
     // Define ROS Message TYPE (Under Scope)
     const mavros_msgs_type = rosnodejs.require('mavros_msgs').msg;
     const Header = rosnodejs.require('std_msgs').msg.Header;
@@ -146,6 +142,5 @@ const createMavlinkMessage = (incoming_msg) => {
         payload64: payload_64
     });
 
-    // const mav_message = new mavros_msgs_type.Mavlink();
     return mav_message;
 };
